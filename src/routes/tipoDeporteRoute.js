@@ -8,10 +8,9 @@ import * as TipoDeporteController from '../controllers/tipoDeporteController.js'
 
 const router = Router();
 
-// Nota: Dado que estás usando `import * as TipoDeporteController` en el routes
-// y el controller exporta con nombre (`export { createTipoDeport }`),
-// debes acceder a la función como TipoDeporteController.createTipoDeport.
 
 router.post('/deporte', TipoDeporteController.createTipoDeport);
+router.delete('/deporte/:id', TipoDeporteController.deleteTipoDeport);
+
 
 export default router;

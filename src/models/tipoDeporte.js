@@ -16,6 +16,27 @@ const createTipoDeport = async (serviceData) => {
     }
 };
 
+/**
+ * Elimina un tipo de deporte por su ID.
+ * @param {number} id - El ID del deporte a eliminar.
+ * @returns {number} El número de filas afectadas (debería ser 1 si se eliminó).
+ */
+const deleteTipoDeport = async (id) => {
+    try {
+        const [result] = await pool.promise().query(
+            'DELETE FROM tipos_deporte WHERE id = ?',
+            [id]
+        );
+    
+        return result.affectedRows; 
+
+    } catch (error) {
+        
+        throw error;
+    }
+};
+
 export {
-    createTipoDeport
+    createTipoDeport,
+    deleteTipoDeport
 };
