@@ -1,35 +1,47 @@
-// database.js (Conexión usando 'mysql2' y el método pool, recomendado para APIs)
+// database.js
 
 import mysql from 'mysql2';
 
 // Configuración de la conexión a la base de datos BdTorneos
 const pool = mysql.createPool({
-    host: 'localhost',      // <--- ¡CORRECCIÓN! El host es tu máquina local
-    port: 3306,             // <--- ¡AGREGADO! El puerto es 3306
+    host: 'localhost', 
+    port: 3306, 
     user: 'root', 
     password: 'yyyyyyyy', 
-    database: 'bdtorneos',  // Nota: asegúrate de que el nombre sea 'BdTorneos' y no 'bdtorneos' (MySQL es case-insensitive en Windows/macOS, pero sensible en Linux)
+    database: 'bdtorneos', 
     
     waitForConnections: true,
-    connectionLimit: 10,     
+    connectionLimit: 10, 
     queueLimit: 0
 });
 
-// Intentar obtener una conexión para verificar que funciona
-pool.getConnection((err, connection) => {
+// En lugar de usar pool.getConnection (que requiere liberación manual),
+// puedes usar una promesa simple para verificar si el pool está vivo.
+// O simplemente dejarlo así, ya que el pool.promise() es lo que necesitas.
+
+// ❌ ELIMINA o COMENTA este bloque de código si es necesario
+/* pool.getConnection((err, connection) => {
     if (err) {
-        // Manejar el error de conexión inicial
         console.error('❌ Error al conectar a MySQL:', err.message);
-        // Puedes agregar lógica para salir de la aplicación si es un error fatal
-        // process.exit(1); 
         return;
     }
-    
     console.log('✅ Conexión exitosa a MySQL (Pool creado).');
-    
-    // La conexión se libera automáticamente si usas pool.query, 
-    // pero si usas getConnection, debes liberarla
-    connection.release();
+    // Si usas pool.getConnection, debes liberarla, sino puede causar un "leak"
+    connection.release(); 
 });
+*/
 
-export default pool.promise();
+// 1. Usa pool.promise().query para verificar la conexión (más limpio)
+pool.promise().query('SELECT 1')
+    .then(() => {
+        console.log('✅ Conexión exitosa a MySQL (Pool creado).');
+    })
+    .catch((err) => {
+        console.error('❌ Error FATAL al conectar a MySQL:', err.message);
+        // Si no se conecta, sal del proceso
+        process.exit(1); 
+    });
+
+
+// Asegúrate de que estás exportando la versión con promesas
+export default pool;
