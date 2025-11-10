@@ -1,13 +1,11 @@
-// Archivo: ../controllers/tipoDeporteController.js
-
 import * as deporteModel from '../models/tipoDeporte.js';
 
 const createTipoDeport = async (req, res) => {
-    // 1. Desestructuración de los datos del body, asignando NULL por defecto
+   
     const { 
         nombre, 
-        descripcion = null, // Se asigna null si no viene en el body
-        icono = null,       // Se asigna null si no viene en el body
+        descripcion = null, 
+        icono = null,       
         esta_activo 
     } = req.body;
 
@@ -24,7 +22,6 @@ const createTipoDeport = async (req, res) => {
             nombre,
             descripcion,
             icono,
-            // Usa el valor convertido (1 o 0)
             esta_activo: isActiveValue 
         });
 
@@ -34,7 +31,7 @@ const createTipoDeport = async (req, res) => {
         // 5. Si hay un error (ej. duplicado por la restricción UNIQUE de SQL, o cualquier otro error de DB)
         console.error("❌❌ ERROR FATAL CAPTURADO ❌❌:", error);
         
-        // Es crucial devolver la respuesta para que Postman termine de cargar.
+    
         res.status(500).json({
             message: 'Error al crear el deporte',
             error: error.message,

@@ -1,5 +1,4 @@
-import express from 'express';
-// Asegúrate de que tipoDeporteRoute exporta con 'export default router'
+import express from 'express'
 import deporteRoutes from './src/routes/tipoDeporteRoute.js'; 
 
 const app = express();
