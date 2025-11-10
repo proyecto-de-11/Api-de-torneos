@@ -1,4 +1,5 @@
-const pool = require('../config/db.js');
+// Cambio de 'require' a 'import' para módulos locales
+import pool from '../config/database.js';
 
 
 const createTipoDeport = async (serviceData) => {
@@ -14,14 +15,9 @@ const createTipoDeport = async (serviceData) => {
     }
 };
 
-const findDeporteByName = async (nombre) => {
-    try {
-        const [rows] = await pool.promise().query(
-            'SELECT * FROM tipos_deporte WHERE nombre = ?',
-            [nombre]
-        );
-        return rows[0];
-    } catch (error) {
-        throw error;
-    } 
+
+
+// Exportar las funciones para que el controlador pueda importarlas
+export {
+    createTipoDeport
 };
