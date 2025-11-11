@@ -75,7 +75,37 @@ const deleteTipoDeport = async (req, res) => {
     }
 };
 
+const getTipoDeportByName = async (req, res) => {
+    // 1. Obtener el nombre del query string (ej: ?nombre=Futbol)
+    const { nombre } = req.query;
+
+    if (!nombre || nombre.trim() === '') {
+        return res.status(400).json({ message: 'El parámetro "nombre" es obligatorio para la búsqueda' });
+    }
+
+    try {
+        // 2. Llamar al modelo para buscar
+        const deportes = await deporteModel.getTipoDeportByName(nombre.trim());
+
+        // 3. Verificar resultados
+        if (deportes.length === 0) {
+            return res.status(404).json({ message: `No se encontraron deportes que contengan: "${nombre}"` });
+        }
+
+        // 4. Éxito
+        res.status(200).json(deportes);
+
+    } catch (error) {
+        console.error("❌ ERROR al buscar deporte por nombre ❌:", error);
+        res.status(500).json({
+            message: 'Error interno del servidor al realizar la búsqueda',
+            error: error.message,
+        });
+    }
+};
+
 export {
     createTipoDeport,
-    deleteTipoDeport
+    deleteTipoDeport,
+    getTipoDeportByName
 };

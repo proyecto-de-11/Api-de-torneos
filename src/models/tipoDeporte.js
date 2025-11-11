@@ -36,7 +36,28 @@ const deleteTipoDeport = async (id) => {
     }
 };
 
+/**
+ * Busca un tipo de deporte por su nombre (o coincidencia parcial).
+ * Utiliza LIKE para búsquedas flexibles e insensibles a mayúsculas/minúsculas.
+ * @param {string} nombre - El nombre o parte del nombre a buscar.
+ * @returns {Array} Un array con los deportes encontrados.
+ */
+const getTipoDeportByName = async (nombre) => {
+    try {
+        // Usamos LIKE CONCAT('%', ?, '%') para buscar coincidencias parciales.
+        // También usamos COLLATE utf8mb4_general_ci para hacer la búsqueda
+        // insensible a mayúsculas/minúsculas y acentos (depende de la configuración de tu DB)
+        const [rows] = await pool.promise().query(
+            'SELECT id, nombre, descripcion, icono, esta_activo FROM tipos_deporte WHERE nombre LIKE CONCAT("%", ?, "%") COLLATE utf8mb4_general_ci',
+            [nombre]
+        );
+        return rows; 
+    } catch (error) {
+        throw error;
+    }
+};
 export {
     createTipoDeport,
-    deleteTipoDeport
+    deleteTipoDeport,
+    getTipoDeportByName
 };

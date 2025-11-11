@@ -11,6 +11,7 @@ const router = Router();
 
 router.post('/deporte', TipoDeporteController.createTipoDeport);
 router.delete('/deporte/:id', TipoDeporteController.deleteTipoDeport);
+router.get('/deporte/buscar', TipoDeporteController.getTipoDeportByName);
 
 
 export default router;
