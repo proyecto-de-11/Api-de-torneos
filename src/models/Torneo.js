@@ -16,6 +16,42 @@ const createTorneo = async (serviceData) => {
     }
 };
 
+/**
+ * @param {number} id - El ID del torneo a actualizar.
+ * @param {object} serviceData - Los datos del torneo a actualizar.
+ * @returns {number} El número de filas afectadas (debería ser 1 si se actualizó).
+ */
+const updateTorneo = async (id, serviceData) => {
+    const columns = [];
+    const values = [];
+
+    for (const key in serviceData) {
+        if (serviceData[key] !== undefined) {
+            if (key !== 'id' && key !== 'fecha_creacion' && key !== 'fecha_actualizacion') {
+                columns.push(`${key} = ?`);
+                values.push(serviceData[key]);
+            }
+        }
+    }
+
+    if (columns.length === 0) {
+        return 0;
+    }
+
+    values.push(id);
+
+    const sql = `UPDATE torneos SET ${columns.join(', ')} WHERE id = ?`;
+
+    try {
+        const [result] = await pool.promise().query(sql, values);
+        return result.affectedRows; 
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 export {
-    createTorneo
+    createTorneo,
+    updateTorneo
 };

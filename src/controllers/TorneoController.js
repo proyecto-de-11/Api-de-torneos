@@ -69,6 +69,50 @@ const createTorneo = async (req, res) => {
     }
 };
 
+const updateTorneo = async (req, res) => {
+    const torneoId = req.params.id; 
+    const updateData = req.body;
+
+    // 1. Validación básica del ID
+    if (!torneoId || isNaN(torneoId)) {
+        return res.status(400).json({ message: 'ID de torneo no válido o faltante' });
+    }
+
+    // 2. Si no se envía cuerpo, no hay nada que hacer
+    if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ message: 'Datos de actualización no proporcionados' });
+    }
+
+    try {
+        // 3. Llama al modelo para ejecutar la actualización
+        const affectedRows = await torneoModel.updateTorneo(torneoId, updateData);
+
+        // 4. Verifica el resultado
+        if (affectedRows === 0) {
+            const existingTorneo = await torneoModel.getTorneoById(torneoId); 
+            
+            if (existingTorneo) {
+                return res.status(200).json({ message: 'Torneo actualizado exitosamente (no se detectaron cambios en los datos)' });
+            }
+            
+            return res.status(404).json({ message: `No se encontró el torneo con ID ${torneoId} para actualizar.` });
+        }
+
+        res.status(200).json({ 
+            message: `Torneo con ID ${torneoId} actualizado exitosamente`,
+            torneoId: torneoId 
+        });
+
+    } catch (error) {
+        console.error("❌ ERROR al actualizar torneo ❌:", error);
+        res.status(500).json({
+            message: 'Error al intentar actualizar el torneo',
+            error: error.message,
+        });
+    }
+};
+
 export {
-    createTorneo
+    createTorneo,
+    updateTorneo
 };
