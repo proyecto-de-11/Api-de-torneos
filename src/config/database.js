@@ -15,21 +15,6 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// En lugar de usar pool.getConnection (que requiere liberación manual),
-// puedes usar una promesa simple para verificar si el pool está vivo.
-// O simplemente dejarlo así, ya que el pool.promise() es lo que necesitas.
-
-// ❌ ELIMINA o COMENTA este bloque de código si es necesario
-/* pool.getConnection((err, connection) => {
-    if (err) {
-        console.error('❌ Error al conectar a MySQL:', err.message);
-        return;
-    }
-    console.log('✅ Conexión exitosa a MySQL (Pool creado).');
-    // Si usas pool.getConnection, debes liberarla, sino puede causar un "leak"
-    connection.release(); 
-});
-*/
 
 // 1. Usa pool.promise().query para verificar la conexión (más limpio)
 pool.promise().query('SELECT 1')
