@@ -147,8 +147,32 @@ const deleteTorneo = async (req, res) => {
     }
 };
 
+const getAllTorneos = async (req, res) => {
+    try {
+        
+        const torneos = await torneoModel.getAllTorneos();
+
+        // 2. Verificar si hay resultados
+        if (torneos.length === 0) {
+            // Si no hay torneos, devolvemos 200 OK con un array vacío
+            return res.status(200).json([]);
+        }
+
+        // 3. Éxito
+        res.status(200).json(torneos);
+
+    } catch (error) {
+        console.error("❌ ERROR al obtener la lista de torneos ❌:", error);
+        res.status(500).json({
+            message: 'Error interno del servidor al obtener torneos',
+            error: error.message,
+        });
+    }
+};
+
 export {
     createTorneo,
     updateTorneo,
-    deleteTorneo
+    deleteTorneo,
+    getAllTorneos
 };

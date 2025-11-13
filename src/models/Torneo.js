@@ -71,8 +71,26 @@ const deleteTorneo = async (id) => {
     }
 };
 
+/**
+ * Obtiene todos los torneos de la base de datos.
+ * @returns {Array} Un array con todos los objetos de torneo.
+ */
+const getAllTorneos = async () => {
+    try {
+        // Seleccionamos todos los campos para listar la información completa
+        const [rows] = await pool.promise().query(
+            'SELECT id, nombre, tipo_deporte_id, categoria, nivel, estado, fecha_inicio, costo_inscripcion, fecha_creacion, fecha_actualizacion FROM torneos ORDER BY fecha_creacion DESC'
+        );
+        // Devolvemos el array de resultados
+        return rows; 
+    } catch (error) {
+        throw error;
+    }
+};
+
 export {
     createTorneo,
     updateTorneo,
-    deleteTorneo
+    deleteTorneo,
+    getAllTorneos
 };
