@@ -7,5 +7,6 @@ const router = Router();
 
 router.post('/torneo', TorneoController.createTorneo);
 router.put('/torneo/:id', TorneoController.updateTorneo);
+router.delete('/torneo/:id', TorneoController.deleteTorneo);
 
 export default router;
