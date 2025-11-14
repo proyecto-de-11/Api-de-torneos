@@ -88,9 +88,30 @@ const getAllTorneos = async () => {
     }
 };
 
+/**
+ * Obtiene un torneo por su ID.
+ * @param {number} id - El ID del torneo a buscar.
+ * @returns {object|null} El objeto torneo si se encuentra, o null.
+ */
+const getTorneoById = async (id) => {
+    try {
+        const [rows] = await pool.promise().query(
+            // Seleccionamos todos los campos del torneo
+            'SELECT * FROM torneos WHERE id = ?',
+            [id]
+        );
+        
+        // Si rows tiene un elemento, lo devolvemos; si está vacío, devolvemos null
+        return rows.length > 0 ? rows[0] : null; 
+    } catch (error) {
+        throw error;
+    }
+};
+
 export {
     createTorneo,
     updateTorneo,
     deleteTorneo,
-    getAllTorneos
+    getAllTorneos,
+    getTorneoById
 };

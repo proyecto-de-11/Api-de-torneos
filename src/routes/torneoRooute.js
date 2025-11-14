@@ -9,5 +9,6 @@ router.post('/torneo', TorneoController.createTorneo);
 router.put('/torneo/:id', TorneoController.updateTorneo);
 router.delete('/torneo/:id', TorneoController.deleteTorneo);
 router.get('/torneo', TorneoController.getAllTorneos);
+router.get('/torneo/:id', TorneoController.getTorneoById);
 
 export default router;

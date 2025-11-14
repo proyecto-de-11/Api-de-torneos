@@ -170,9 +170,36 @@ const getAllTorneos = async (req, res) => {
     }
 };
 
+const getTorneoById = async (req, res) => {
+    const torneoId = req.params.id;
+
+   
+    if (!torneoId || isNaN(torneoId)) {
+        return res.status(400).json({ message: 'ID de torneo no válido o faltante' });
+    }
+
+    try {
+        const torneo = await torneoModel.getTorneoById(torneoId);
+
+        if (!torneo) {
+            return res.status(404).json({ message: `Torneo con ID ${torneoId} no encontrado.` });
+        }
+
+        res.status(200).json(torneo);
+
+    } catch (error) {
+        console.error("❌ ERROR al obtener torneo por ID ❌:", error);
+        res.status(500).json({
+            message: 'Error interno del servidor al obtener el torneo',
+            error: error.message,
+        });
+    }
+};
+
 export {
     createTorneo,
     updateTorneo,
     deleteTorneo,
-    getAllTorneos
+    getAllTorneos,
+    getTorneoById
 };
