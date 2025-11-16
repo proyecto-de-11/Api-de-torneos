@@ -50,6 +50,40 @@ const inscribirEquipo = async (req, res) => {
     }
 };
 
+const updatequipoTorneo = async (req, res) => {
+    const inscripcionId = req.params.id; 
+    const updateData = req.body;
+
+    if (!inscripcionId || isNaN(inscripcionId)) {
+        return res.status(400).json({ message: 'ID de inscripción no válido o faltante' });
+    }
+
+    if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ message: 'Datos de actualización no proporcionados' });
+    }
+
+    try {
+        const affectedRows = await equipoTorneoModel.updateEquipoTorneo(inscripcionId, updateData);
+
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: `No se encontró el registro de inscripción con ID ${inscripcionId} o no se proporcionaron cambios.` });
+        }
+
+        res.status(200).json({ 
+            message: `Registro de inscripción con ID ${inscripcionId} actualizado exitosamente`,
+            inscripcionId: inscripcionId 
+        });
+
+    } catch (error) {
+        console.error("❌ ERROR al actualizar inscripción ❌:", error);
+        res.status(500).json({
+            message: 'Error al intentar actualizar la inscripción',
+            error: error.message,
+        });
+    }
+};
+
 export {
-    inscribirEquipo
+    inscribirEquipo,
+    updatequipoTorneo
 };
