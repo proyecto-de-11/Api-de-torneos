@@ -72,6 +72,6 @@ const createPartido = async (req, res) => {
     }
 };
 
-module.exports = {
+export{
     createPartido
 };
