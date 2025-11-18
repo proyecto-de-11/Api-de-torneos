@@ -107,12 +107,30 @@ const getInscripcionTorneoById = async (id) => {
     }
 };
 
-
+/**
+ * Obtiene todas las inscripciones (equipos_torneo) para un torneo específico.
+ * @param {number} torneoId - El ID del torneo a consultar.
+ * @returns {Array} Un array de objetos de inscripción.
+ */
+const getInscripcionesByTorneoId = async (torneoId) => {
+    try {
+        // La consulta SQL selecciona todos los campos de la tabla 'equipos_torneo'
+        const [rows] = await pool.query(
+            'SELECT id, equipo_id, torneo_id, fecha_inscripcion FROM equipos_torneo WHERE torneo_id = ?',
+            [torneoId]
+        );
+        return rows;
+    } catch (error) {
+        // Re-lanza el error para que el controlador lo maneje
+        throw error;
+    }
+};
 
 
 export {
     inscribirEquipoATorneo,
     updateEquipoTorneo,
     deleteEsquiporTorneo,
-    getInscripcionTorneoById
+    getInscripcionTorneoById,
+    getInscripcionesByTorneoId
 };
