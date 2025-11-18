@@ -122,8 +122,31 @@ const getAllPartidos = async () => {
     }
 };
 
+/**
+ * Obtiene un partido por su ID.
+ * @param {number} id - El ID del partido a buscar.
+ * @returns {Promise<object|null>} El objeto partido si se encuentra, o null.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getPartidoById = async (id) => {
+    try {
+        // Consulta SQL para seleccionar todos los campos del partido por su ID
+        const sql = 'SELECT * FROM partidos WHERE id = ?';
+        
+        const [rows] = await pool.query(sql, [id]);
+        
+        // Si se encuentra un resultado, devolver el primer elemento (el partido); si no, devolver null.
+        return rows.length > 0 ? rows[0] : null; 
+        
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
+
 export {
     createPartido,
     updatePartido,
-    getAllPartidos
+    getAllPartidos,
+    getPartidoById
 };

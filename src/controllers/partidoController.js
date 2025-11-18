@@ -145,8 +145,48 @@ const getAllPartidosController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para obtener un partido específico por su ID.
+ */
+const getPartidoByIdController = async (req, res) => {
+    // Obtener el ID del partido desde los parámetros de la ruta
+    const partidoId = req.params.id; 
+
+    // Validación básica del ID
+    if (!partidoId) {
+        return res.status(400).json({ message: 'El ID del partido es obligatorio.' });
+    }
+
+    try {
+        // Llamada al método del modelo
+        const partido = await partidoModel.getPartidoById(partidoId);
+
+        if (!partido) {
+            // 404 Not Found si el ID no existe en la base de datos
+            return res.status(404).json({ message: `Partido con ID ${partidoId} no encontrado.` });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Partido obtenido exitosamente', 
+            data: partido 
+        });
+        
+    } catch (error) {
+        
+        console.error(` ERROR FATAL AL OBTENER PARTIDO (ID: ${partidoId}) :`, error);
+        
+        res.status(500).json({
+            message: 'Error al obtener el partido',
+            error: error.message,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export{
     createPartido,
     updatePartidoController,
-    getAllPartidosController
+    getAllPartidosController,
+    getPartidoByIdController
 };
