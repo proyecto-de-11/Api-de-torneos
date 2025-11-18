@@ -1,2 +1,6 @@
 # Directorio de dependencias
 node_modules/
+
+# Variables de Entorno 
+.env 
+.env.*

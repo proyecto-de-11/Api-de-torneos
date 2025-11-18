@@ -1,17 +1,18 @@
+// models/tipoDeporte.js (CORREGIDO)
 import pool from '../config/database.js';
 
 const createTipoDeport = async (serviceData) => {
     const { nombre, descripcion, icono, esta_activo } = serviceData;
 
     try {
-        const [result] = await pool.promise().query( 
+        // ✅ CORRECCIÓN: Se eliminó .promise()
+        const [result] = await pool.query( 
             'INSERT INTO tipos_deporte (nombre, descripcion, icono, esta_activo) VALUES (?, ?, ?, ?)',
             [nombre, descripcion, icono, esta_activo]
         );
         return result.insertId;
         
     } catch (error) {
-        
         throw error;
     }
 };
@@ -23,7 +24,8 @@ const createTipoDeport = async (serviceData) => {
  */
 const deleteTipoDeport = async (id) => {
     try {
-        const [result] = await pool.promise().query(
+        // ✅ CORRECCIÓN: Se eliminó .promise()
+        const [result] = await pool.query(
             'DELETE FROM tipos_deporte WHERE id = ?',
             [id]
         );
@@ -31,7 +33,6 @@ const deleteTipoDeport = async (id) => {
         return result.affectedRows; 
 
     } catch (error) {
-        
         throw error;
     }
 };
@@ -44,18 +45,19 @@ const deleteTipoDeport = async (id) => {
  */
 const getTipoDeportByName = async (nombre) => {
     try {
-        // Usamos LIKE CONCAT('%', ?, '%') para buscar coincidencias parciales.
-        // También usamos COLLATE utf8mb4_general_ci para hacer la búsqueda
-        // insensible a mayúsculas/minúsculas y acentos (depende de la configuración de tu DB)
-        const [rows] = await pool.promise().query(
-            'SELECT id, nombre, descripcion, icono, esta_activo FROM tipos_deporte WHERE nombre LIKE CONCAT("%", ?, "%") COLLATE utf8mb4_general_ci',
+        // ✅ CORRECCIÓN: Se eliminó .promise()
+        const [rows] = await pool.query(
+            'SELECT id, nombre, descripcion, icono, esta_activo FROM tipos_deporte WHERE nombre LIKE CONCAT("%", ?, "%")',
             [nombre]
         );
+        // Nota: Se eliminó el COLLATE por defecto para mayor compatibilidad, 
+        // a menos que sepas que tu DB lo soporta.
         return rows; 
     } catch (error) {
         throw error;
     }
 };
+
 export {
     createTipoDeport,
     deleteTipoDeport,

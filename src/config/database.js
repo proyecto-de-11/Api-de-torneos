@@ -1,13 +1,13 @@
 // database.js
 
-import mysql from 'mysql2';
+/*import mysql from 'mysql2';
 
 // Configuración de la conexión a la base de datos BdTorneos
 const pool = mysql.createPool({
     host: 'localhost', 
-    port: 3306, 
-    user: 'root', 
-    password: 'yyyyyyyy', 
+    port: 3306,                                     
+    user: 'jasson', 
+    password: '123456', 
     database: 'bdtorneos', 
     
     waitForConnections: true,
@@ -29,4 +29,20 @@ pool.promise().query('SELECT 1')
 
 
 // Asegúrate de que estás exportando la versión con promesas
+export default pool;*/
+
+// config/db.js
+import mysql from 'mysql2/promise';
+import 'dotenv/config';
+
+// Crear un pool de conexiones
+const pool = mysql.createPool({
+    uri: process.env.DATABASE_URL, 
+    waitForConnections: true,
+    connectionLimit: 10, 
+    queueLimit: 0
+});
+
+console.log(' Módulo de MySQL configurado y listo.');
+
 export default pool;
