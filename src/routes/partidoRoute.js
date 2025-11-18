@@ -7,5 +7,9 @@ router.post('/partido', partidoController.createPartido);
 
 router.put('/partido/:id', partidoController.updatePartidoController);
 
+router.get('/partido', partidoController.getAllPartidosController);
+
+router.get('/partido/:id', partidoController.getPartidoByIdController);
+
 
 export default router;

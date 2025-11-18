@@ -92,8 +92,61 @@ const updatePartido = async (id, serviceData) => {
         throw error;
     }
 };
+/**
+ * Obtiene todos los registros de partidos de la base de datos.
+ * @returns {Promise<Array>} - Un array con todos los objetos de partido.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getAllPartidos = async () => {
+    try {
+        // Consulta SQL que selecciona todos los campos (*) directamente de la tabla partidos
+        // y ordena por fecha de creación de forma descendente.
+        const sql = `
+            SELECT 
+                id, creado_por, equipo_local_id, equipo_visitante_id, reserva_id, 
+                torneo_id, tipo_partido, fecha_partido, hora_inicio, 
+                duracion_minutos, resultado_local, resultado_visitante, 
+                estado, observaciones, fecha_creacion, fecha_actualizacion
+            FROM partidos 
+            ORDER BY fecha_creacion DESC
+        `;
+
+        // Ejecutar la consulta sin usar .promise().query
+        const [rows] = await pool.query(sql); 
+        
+        return rows; 
+
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
+
+/**
+ * Obtiene un partido por su ID.
+ * @param {number} id - El ID del partido a buscar.
+ * @returns {Promise<object|null>} El objeto partido si se encuentra, o null.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getPartidoById = async (id) => {
+    try {
+        // Consulta SQL para seleccionar todos los campos del partido por su ID
+        const sql = 'SELECT * FROM partidos WHERE id = ?';
+        
+        const [rows] = await pool.query(sql, [id]);
+        
+        // Si se encuentra un resultado, devolver el primer elemento (el partido); si no, devolver null.
+        return rows.length > 0 ? rows[0] : null; 
+        
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
 
 export {
     createPartido,
-    updatePartido
+    updatePartido,
+    getAllPartidos,
+    getPartidoById
 };
