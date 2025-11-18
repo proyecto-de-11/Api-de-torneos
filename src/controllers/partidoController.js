@@ -71,7 +71,48 @@ const createPartido = async (req, res) => {
         });
     }
 };
+/**
+ * Controlador para la edición de un partido existente.
+ */
+const updatePartidoController = async (req, res) => {
+    const partidoId = req.params.id; 
+    const partidoData = req.body; // El modelo se encarga de filtrar los campos
+
+    if (!partidoId || Object.keys(partidoData).length === 0) {
+        return res.status(400).json({ 
+            message: 'El ID y al menos un campo a actualizar son obligatorios.' 
+        });
+    }
+
+    try {
+        // Llamada correcta usando el alias de importación
+        const affectedRows = await partidoModel.updatePartido(partidoId, partidoData);
+
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: `Partido con ID ${partidoId} no encontrado o no se realizaron cambios.` });
+        }
+
+        res.status(200).json({ 
+            message: 'Partido actualizado exitosamente', 
+            partidoId: partidoId,
+            filas_afectadas: affectedRows 
+        });
+        
+    } catch (error) {
+        console.error(" ERROR FATAL AL ACTUALIZAR PARTIDO :", error);
+        
+        // Manejo de errores de MySQL, mostrando un mensaje útil
+        const errorMessage = error.sqlMessage || error.message; 
+        
+        res.status(500).json({
+            message: 'Error al actualizar el partido',
+            error: errorMessage,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
 
 export{
-    createPartido
+    createPartido,
+    updatePartidoController
 };

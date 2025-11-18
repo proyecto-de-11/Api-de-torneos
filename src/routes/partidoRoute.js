@@ -5,4 +5,7 @@ const router = Router();
 
 router.post('/partido', partidoController.createPartido);
 
+router.put('/partido/:id', partidoController.updatePartidoController);
+
+
 export default router;

@@ -47,8 +47,53 @@ const createPartido = async (serviceData) => {
         throw error;
     }
 };
+/**
+ * Actualiza un registro de partido por su ID.
+ * @param {number} id - El ID del partido a actualizar.
+ * @param {object} serviceData - Los datos a actualizar.
+ * @returns {Promise<number>} - El número de filas afectadas.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const updatePartido = async (id, serviceData) => {
+    const columns = [];
+    const values = [];
 
+    // Campos que NO deberían ser modificables a través de este endpoint (p. ej., IDs claves)
+    // Esto es opcional, pero añade una capa de seguridad.
+    const excludedFields = ['id', 'fecha_creacion', 'fecha_actualizacion'];
+    
+    // Iterar sobre los datos recibidos (serviceData)
+    for (const key in serviceData) {
+        // 1. Asegurarse de que el valor no sea undefined (para evitar NULLs inesperados)
+        // 2. Asegurarse de que el campo no esté en la lista de exclusión
+        if (serviceData[key] !== undefined && !excludedFields.includes(key)) { 
+            columns.push(`${key} = ?`);
+            values.push(serviceData[key]);
+        }
+    }
+
+    // Si no hay campos para actualizar, retornar 0
+    if (columns.length === 0) {
+        return 0; 
+    }
+
+    // Añadir el ID del partido al final para la cláusula WHERE
+    values.push(id);
+
+    // Construir la consulta SQL
+    const sql = `UPDATE partidos SET ${columns.join(', ')} WHERE id = ?`;
+
+    try {
+        // Usar pool.query si es un pool con promesas, o pool.promise().query si es necesario
+        const [result] = await pool.query(sql, values); 
+        return result.affectedRows; 
+
+    } catch (error) {
+        throw error;
+    }
+};
 
 export {
-    createPartido
+    createPartido,
+    updatePartido
 };
