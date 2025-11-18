@@ -4,7 +4,7 @@ const createTorneo = async (serviceData) => {
     const {creado_por, nombre, descripcion, tipo_deporte_id, categoria, nivel, formato, max_equipos, min_equipos, premio_descripcion, reglas, fecha_inicio, fecha_fin, fecha_inscripcion_inicio, fecha_inscripcion_fin, costo_inscripcion, ubicacion, logo, estado} = serviceData;
 
     try {
-        const [result] = await pool.promise().query( 
+        const [result] = await pool.query( 
             'INSERT INTO torneos (creado_por, nombre, descripcion, tipo_deporte_id, categoria, nivel, formato, max_equipos, min_equipos, premio_descripcion, reglas, fecha_inicio, fecha_fin, fecha_inscripcion_inicio, fecha_inscripcion_fin, costo_inscripcion, ubicacion, logo, estado ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [creado_por, nombre, descripcion, tipo_deporte_id, categoria, nivel, formato, max_equipos, min_equipos, premio_descripcion, reglas, fecha_inicio, fecha_fin, fecha_inscripcion_inicio, fecha_inscripcion_fin, costo_inscripcion, ubicacion, logo, estado]
         );
@@ -95,7 +95,7 @@ const getAllTorneos = async () => {
  */
 const getTorneoById = async (id) => {
     try {
-        const [rows] = await pool.promise().query(
+        const [rows] = await pool.query(
             // Seleccionamos todos los campos del torneo
             'SELECT * FROM torneos WHERE id = ?',
             [id]

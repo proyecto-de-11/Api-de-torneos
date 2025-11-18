@@ -120,8 +120,35 @@ const deleteEquipoTorneo = async (req, res) => {
     }
 };
 
+const getInscripcionTorneoById = async (req, res) => {
+    const inscripcionId = req.params.id;
+
+   
+    if (!inscripcionId || isNaN(inscripcionId)) {
+        return res.status(400).json({ message: 'ID de inscripcion no válido o faltante' });
+    }
+
+    try {
+        const inscripcion = await equipoTorneoModel.getInscripcionTorneoById(inscripcionId);
+
+        if (!inscripcion) {
+            return res.status(404).json({ message: `inscripcion al torneo con ID ${inscripcionId} no encontrado.` });
+        }
+
+        res.status(200).json(inscripcion);
+
+    } catch (error) {
+        console.error("❌ ERROR al obtener la inscripcion del torneo por ID ❌:", error);
+        res.status(500).json({
+            message: 'Error interno del servidor al obtener el torneo',
+            error: error.message,
+        });
+    }
+};
+
 export {
     inscribirEquipo,
     updatequipoTorneo,
-    deleteEquipoTorneo
+    deleteEquipoTorneo,
+    getInscripcionTorneoById
 };

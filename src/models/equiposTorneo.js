@@ -16,7 +16,7 @@ const inscribirEquipoATorneo = async (serviceData) => {
     } = serviceData;
 
     try {
-        const [result] = await pool.promise().query(
+        const [result] = await pool.query(
             'INSERT INTO equipos_torneo (torneo_id, equipo_id, esta_confirmado, grupo, posicion_grupo, posicion_general) VALUES (?, ?, ?, ?, ?, ?)',
             [torneo_id, equipo_id, esta_confirmado, grupo, posicion_grupo, posicion_general]
         );
@@ -59,7 +59,7 @@ const updateEquipoTorneo = async (id, serviceData) => {
     const sql = `UPDATE equipos_torneo SET ${columns.join(', ')} WHERE id = ?`;
 
     try {
-        const [result] = await pool.promise().query(sql, values);
+        const [result] = await pool.query(sql, values);
         return result.affectedRows; 
 
     } catch (error) {
@@ -74,7 +74,7 @@ const updateEquipoTorneo = async (id, serviceData) => {
  */
 const deleteEsquiporTorneo = async (id) => {
     try {
-        const [result] = await pool.promise().query(
+        const [result] = await pool.query(
             'DELETE FROM equipos_torneo WHERE id = ?',
             [id]
         );
@@ -87,10 +87,32 @@ const deleteEsquiporTorneo = async (id) => {
     }
 };
 
+/**
+ * Obtiene un torneo por su ID.
+ * @param {number} id - El ID del torneo a buscar.
+ * @returns {object|null} El objeto torneo si se encuentra, o null.
+ */
+const getInscripcionTorneoById = async (id) => {
+    try {
+        const [rows] = await pool.query(
+            // Seleccionamos todos los campos del torneo
+            'SELECT * FROM equipos_torneo WHERE id = ?',
+            [id]
+        );
+        
+        // Si rows tiene un elemento, lo devolvemos; si está vacío, devolvemos null
+        return rows.length > 0 ? rows[0] : null; 
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 
 
 export {
     inscribirEquipoATorneo,
     updateEquipoTorneo,
-    deleteEsquiporTorneo
+    deleteEsquiporTorneo,
+    getInscripcionTorneoById
 };
