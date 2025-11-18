@@ -1,4 +1,4 @@
-// database.js
+// database.js ---------------mysql localllll-----------------
 
 /*import mysql from 'mysql2';
 
@@ -30,7 +30,7 @@ pool.promise().query('SELECT 1')
 
 // Asegúrate de que estás exportando la versión con promesas
 export default pool;*/
-
+//------------------------------------------------------------------
 // config/db.js
 import mysql from 'mysql2/promise';
 import 'dotenv/config';
