@@ -112,7 +112,41 @@ const updatePartidoController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para obtener la lista completa de todos los partidos.
+ */
+const getAllPartidosController = async (req, res) => {
+    try {
+        // Llamada al método del modelo
+        const partidos = await partidoModel.getAllPartidos();
+
+        if (partidos.length === 0) {
+            // Si la consulta devuelve un array vacío
+            return res.status(404).json({ message: 'No se encontraron partidos registrados.' });
+        }
+
+        // Respuesta exitosa (200 OK)
+        res.status(200).json({ 
+            message: 'Partidos obtenidos exitosamente', 
+            total: partidos.length,
+            data: partidos 
+        });
+        
+    } catch (error) {
+        
+        console.error(" ERROR FATAL AL OBTENER PARTIDOS :", error);
+        
+        // Respuesta de error interno del servidor
+        res.status(500).json({
+            message: 'Error al obtener la lista de partidos',
+            error: error.message,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export{
     createPartido,
-    updatePartidoController
+    updatePartidoController,
+    getAllPartidosController
 };

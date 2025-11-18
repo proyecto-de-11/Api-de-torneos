@@ -92,8 +92,38 @@ const updatePartido = async (id, serviceData) => {
         throw error;
     }
 };
+/**
+ * Obtiene todos los registros de partidos de la base de datos.
+ * @returns {Promise<Array>} - Un array con todos los objetos de partido.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getAllPartidos = async () => {
+    try {
+        // Consulta SQL que selecciona todos los campos (*) directamente de la tabla partidos
+        // y ordena por fecha de creación de forma descendente.
+        const sql = `
+            SELECT 
+                id, creado_por, equipo_local_id, equipo_visitante_id, reserva_id, 
+                torneo_id, tipo_partido, fecha_partido, hora_inicio, 
+                duracion_minutos, resultado_local, resultado_visitante, 
+                estado, observaciones, fecha_creacion, fecha_actualizacion
+            FROM partidos 
+            ORDER BY fecha_creacion DESC
+        `;
+
+        // Ejecutar la consulta sin usar .promise().query
+        const [rows] = await pool.query(sql); 
+        
+        return rows; 
+
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
 
 export {
     createPartido,
-    updatePartido
+    updatePartido,
+    getAllPartidos
 };
