@@ -4,7 +4,6 @@ import pool from '../config/database.js';
 /**
  * Crea un nuevo registro de partido en la base de datos.
  * @param {object} serviceData - Datos del partido a crear.
- * @returns {Promise<number>} - El ID del partido recién creado.
  * @throws {Error} - Si ocurre un error durante la inserción.
  */
 const createPartido = async (serviceData) => {
@@ -26,7 +25,7 @@ const createPartido = async (serviceData) => {
     } = serviceData;
 
     try {
-        const [result] = await pool.promise().query( 
+        const [result] = await pool.query( 
             `INSERT INTO partidos (
                 creado_por, equipo_local_id, equipo_visitante_id, reserva_id, torneo_id, 
                 tipo_partido, fecha_partido, hora_inicio, duracion_minutos, 
@@ -49,6 +48,7 @@ const createPartido = async (serviceData) => {
     }
 };
 
-module.exports = {
+
+export {
     createPartido
 };
