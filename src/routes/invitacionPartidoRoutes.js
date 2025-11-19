@@ -5,5 +5,7 @@ import * as invitacionPartidoController from '../controllers/invitacionPartidoCo
 const router = Router();
 
 router.post('/invitacionPartido', invitacionPartidoController.createInvitacionPartidoController);
+router.get('/invitacionPartido', invitacionPartidoController.getAllInvitacionesPartidoController);
+
 
 export default router;

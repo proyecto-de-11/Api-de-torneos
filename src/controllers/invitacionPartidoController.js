@@ -35,6 +35,40 @@ const createInvitacionPartidoController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para obtener la lista completa de todas las invitaciones a partidos.
+ */
+const getAllInvitacionesPartidoController = async (req, res) => {
+    try {
+        // Llamada al método del modelo
+        const invitaciones = await invitacionModel.getAllInvitacionesPartido();
+
+        if (invitaciones.length === 0) {
+            // 404 Not Found si no hay registros
+            return res.status(404).json({ message: 'No se encontraron invitaciones registradas.' });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Invitaciones obtenidas exitosamente', 
+            total: invitaciones.length,
+            data: invitaciones 
+        });
+        
+    } catch (error) {
+        
+        console.error(" ERROR FATAL AL OBTENER INVITACIONES :", error);
+        
+        // 500 Internal Server Error
+        res.status(500).json({
+            message: 'Error al obtener la lista de invitaciones',
+            error: error.message,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export {
-    createInvitacionPartidoController
+    createInvitacionPartidoController,
+    getAllInvitacionesPartidoController
 };

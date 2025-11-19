@@ -50,6 +50,34 @@ const createInvitacionPartido = async (serviceData) => {
     }
 };
 
+/**
+ * Obtiene todos los registros de invitaciones a partidos de la base de datos.
+ * @returns {Promise<Array>} - Un array con todos los objetos de invitación.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getAllInvitacionesPartido = async () => {
+    try {
+        // Consulta SQL que selecciona todos los campos de la tabla invitaciones_partido
+        const sql = `
+            SELECT 
+                id, partido_id, equipo_invitado_id, usuario_invito_id, mensaje, 
+                estado, fecha_respuesta, fecha_creacion
+            FROM invitaciones_partido 
+            ORDER BY fecha_creacion DESC
+        `;
+
+        // Ejecutar la consulta sin usar .promise().query
+        const [rows] = await pool.query(sql); 
+        
+        return rows; 
+
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
+
 export {
-    createInvitacionPartido
+    createInvitacionPartido,
+    getAllInvitacionesPartido
 };
