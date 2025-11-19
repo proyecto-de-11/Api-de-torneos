@@ -76,6 +76,58 @@ const createCalificacionJugador = async (serviceData) => {
     }
 };
 
+/**
+ * Obtiene todos los registros de calificaciones de jugadores de la base de datos.
+ * @returns {Promise<Array>} - Un array con todos los objetos de calificación.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getAllCalificacionesJugador = async () => {
+    try {
+        // Consulta SQL que selecciona todos los campos de la tabla calificaciones_jugador
+        const sql = `
+            SELECT 
+                id, partido_id, evaluador_id, jugador_evaluado_id, puntuacion, 
+                posicion_destacada, habilidades, comentario, es_anonimo, 
+                fecha_creacion
+            FROM calificaciones_jugador 
+            ORDER BY fecha_creacion DESC
+        `;
+
+        // Ejecutar la consulta sin usar .promise().query
+        const [rows] = await pool.query(sql); 
+        
+        return rows; 
+
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
+
+/**
+ * Obtiene un registro de calificación de jugador por su ID.
+ * @param {number} id - El ID de la calificación a buscar.
+ * @returns {Promise<object|null>} El objeto calificación si se encuentra, o null.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getCalificacionJugadorById = async (id) => {
+    try {
+        // Consulta SQL para seleccionar todos los campos de la calificación por su ID
+        const sql = 'SELECT * FROM calificaciones_jugador WHERE id = ?';
+        
+        const [rows] = await pool.query(sql, [id]);
+        
+        // Si se encuentra un resultado, devolver el primer elemento; si no, devolver null.
+        return rows.length > 0 ? rows[0] : null; 
+        
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
+
 export {
-    createCalificacionJugador
+    createCalificacionJugador,
+    getAllCalificacionesJugador,
+    getCalificacionJugadorById
 };

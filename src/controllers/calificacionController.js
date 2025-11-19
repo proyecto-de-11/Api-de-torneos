@@ -58,6 +58,80 @@ const createCalificacionJugadorController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para obtener la lista completa de todas las calificaciones de jugadores.
+ */
+const getAllCalificacionesJugadorController = async (req, res) => {
+    try {
+        // Llamada al método del modelo
+        const calificaciones = await calificacionModel.getAllCalificacionesJugador();
+
+        if (calificaciones.length === 0) {
+            // Si la consulta devuelve un array vacío
+            return res.status(404).json({ message: 'No se encontraron calificaciones registradas.' });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Calificaciones obtenidas exitosamente', 
+            total: calificaciones.length,
+            data: calificaciones 
+        });
+        
+    } catch (error) {
+        
+        console.error(" ERROR FATAL AL OBTENER CALIFICACIONES :", error);
+        
+        // 500 Internal Server Error
+        res.status(500).json({
+            message: 'Error al obtener la lista de calificaciones',
+            error: error.message,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
+/**
+ * Controlador para obtener una calificación de jugador específica por su ID.
+ */
+const getCalificacionJugadorByIdController = async (req, res) => {
+    // Obtener el ID de la calificación desde los parámetros de la ruta
+    const calificacionId = req.params.id; 
+
+    // Validación básica
+    if (!calificacionId) {
+        return res.status(400).json({ message: 'El ID de la calificación es obligatorio.' });
+    }
+
+    try {
+        // Llamada al método del modelo
+        const calificacion = await calificacionModel.getCalificacionJugadorById(calificacionId);
+
+        if (!calificacion) {
+            // 404 Not Found si el ID no existe
+            return res.status(404).json({ message: `Calificación con ID ${calificacionId} no encontrada.` });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Calificación obtenida exitosamente', 
+            data: calificacion 
+        });
+        
+    } catch (error) {
+        
+        console.error(` ERROR FATAL AL OBTENER CALIFICACIÓN (ID: ${calificacionId}) :`, error);
+        
+        res.status(500).json({
+            message: 'Error al obtener la calificación',
+            error: error.message,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export {
-    createCalificacionJugadorController
+    createCalificacionJugadorController,
+    getAllCalificacionesJugadorController,
+    getCalificacionJugadorByIdController
 };
