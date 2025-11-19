@@ -6,6 +6,7 @@ const router = Router();
 
 
 router.post('/invitacionesTor', initacionesTorneoController.CreateInvitacionTorneo);
+router.put('/invitacionesTor/:id', initacionesTorneoController.updatInvitacionTorneo);
 
 
 export default router;
