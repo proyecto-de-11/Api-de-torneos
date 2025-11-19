@@ -5,8 +5,7 @@ import equiposTorRoutes from './src/routes/equiposTorneoRoute.js';
 import partidoRoutes from './src/routes/partidoRoute.js'; 
 import invitacionPartidoRoutes from './src/routes/invitacionPartidoRoutes.js'; 
 import invitacionesTorRoutes from './src/routes/invitacionesTorneoRoute.js'; 
-
-
+import calificacionesRoutes from './src/routes/calificacionesRoutes.js'; 
 
 const app = express();
 
@@ -17,8 +16,7 @@ app.use('/api', equiposTorRoutes);
 app.use('/api', partidoRoutes);
 app.use('/api', invitacionPartidoRoutes);
 app.use('/api', invitacionesTorRoutes);
-
-
+app.use('/api', calificacionesRoutes);
 
 app.get('/', (req, res) => {
   const name = 'bro';
