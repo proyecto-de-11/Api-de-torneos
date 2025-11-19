@@ -5,5 +5,7 @@ import * as calificacionController from '../controllers/calificacionController.j
 const router = Router();
 
 router.post('/calificacion', calificacionController.createCalificacionJugadorController);
+router.get('/calificacion', calificacionController.getAllCalificacionesJugadorController);
+
 
 export default router;

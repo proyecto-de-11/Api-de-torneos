@@ -76,6 +76,35 @@ const createCalificacionJugador = async (serviceData) => {
     }
 };
 
+/**
+ * Obtiene todos los registros de calificaciones de jugadores de la base de datos.
+ * @returns {Promise<Array>} - Un array con todos los objetos de calificación.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getAllCalificacionesJugador = async () => {
+    try {
+        // Consulta SQL que selecciona todos los campos de la tabla calificaciones_jugador
+        const sql = `
+            SELECT 
+                id, partido_id, evaluador_id, jugador_evaluado_id, puntuacion, 
+                posicion_destacada, habilidades, comentario, es_anonimo, 
+                fecha_creacion
+            FROM calificaciones_jugador 
+            ORDER BY fecha_creacion DESC
+        `;
+
+        // Ejecutar la consulta sin usar .promise().query
+        const [rows] = await pool.query(sql); 
+        
+        return rows; 
+
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
+
 export {
-    createCalificacionJugador
+    createCalificacionJugador,
+    getAllCalificacionesJugador
 };

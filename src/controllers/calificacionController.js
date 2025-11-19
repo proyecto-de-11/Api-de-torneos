@@ -58,6 +58,40 @@ const createCalificacionJugadorController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para obtener la lista completa de todas las calificaciones de jugadores.
+ */
+const getAllCalificacionesJugadorController = async (req, res) => {
+    try {
+        // Llamada al método del modelo
+        const calificaciones = await calificacionModel.getAllCalificacionesJugador();
+
+        if (calificaciones.length === 0) {
+            // Si la consulta devuelve un array vacío
+            return res.status(404).json({ message: 'No se encontraron calificaciones registradas.' });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Calificaciones obtenidas exitosamente', 
+            total: calificaciones.length,
+            data: calificaciones 
+        });
+        
+    } catch (error) {
+        
+        console.error(" ERROR FATAL AL OBTENER CALIFICACIONES :", error);
+        
+        // 500 Internal Server Error
+        res.status(500).json({
+            message: 'Error al obtener la lista de calificaciones',
+            error: error.message,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export {
-    createCalificacionJugadorController
+    createCalificacionJugadorController,
+    getAllCalificacionesJugadorController
 };
