@@ -144,9 +144,34 @@ const getPartidoById = async (id) => {
     }
 };
 
+/**
+ * Elimina un partido por su ID.
+ * @param {number} id - El ID del partido a eliminar.
+ * @returns {Promise<number>} El número de filas afectadas (debería ser 1 si se eliminó).
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const deletePartido = async (id) => {
+    try {
+        // Ejecutamos la consulta DELETE
+        const [result] = await pool.query(
+            'DELETE FROM partidos WHERE id = ?',
+            [id]
+        );
+    
+        // Retornamos el número de filas que fueron afectadas (eliminadas)
+        return result.affectedRows; 
+
+    } catch (error) {
+        
+        // Relanzamos el error para que el controlador lo capture
+        throw error;
+    }
+};
+
 export {
     createPartido,
     updatePartido,
     getAllPartidos,
-    getPartidoById
+    getPartidoById,
+    deletePartido
 };

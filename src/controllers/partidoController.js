@@ -184,9 +184,54 @@ const getPartidoByIdController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para eliminar un partido específico por su ID.
+ */
+const deletePartidoController = async (req, res) => {
+    // Obtener el ID del partido desde los parámetros de la ruta
+    const partidoId = req.params.id; 
+
+    if (!partidoId) {
+        return res.status(400).json({ message: 'El ID del partido es obligatorio para eliminar.' });
+    }
+
+    try {
+        // Llamada al método del modelo (usando la importación 'partidoModel.')
+        const affectedRows = await partidoModel.deletePartido(partidoId);
+
+        if (affectedRows === 0) {
+            // 404 Not Found si el ID no existe
+            return res.status(404).json({ message: `Partido con ID ${partidoId} no encontrado.` });
+        }
+
+        // 200 OK - Eliminación exitosa
+        res.status(200).json({ 
+            message: 'Partido eliminado exitosamente',
+            partidoId: partidoId 
+        });
+        
+    } catch (error) {
+        
+        console.error(" ERROR FATAL AL ELIMINAR PARTIDO :", error);
+        
+        // Manejo de errores de MySQL (p. ej., si existen claves foráneas)
+        let errorMessage = error.message;
+        if (error.code === 'ER_ROW_IS_REFERENCED') {
+             errorMessage = 'No se puede eliminar el partido porque existen registros relacionados (p. ej., estadísticas o eventos).';
+        }
+
+        res.status(500).json({
+            message: 'Error al eliminar el partido',
+            error: errorMessage,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export{
     createPartido,
     updatePartidoController,
     getAllPartidosController,
-    getPartidoByIdController
+    getPartidoByIdController,
+    deletePartidoController
 };

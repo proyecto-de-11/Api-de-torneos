@@ -11,5 +11,8 @@ router.get('/partido', partidoController.getAllPartidosController);
 
 router.get('/partido/:id', partidoController.getPartidoByIdController);
 
+router.delete('/partido/:id', partidoController.deletePartidoController);
+
+
 
 export default router;
