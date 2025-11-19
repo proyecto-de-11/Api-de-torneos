@@ -126,8 +126,71 @@ const getCalificacionJugadorById = async (id) => {
     }
 };
 
+/**
+ * Actualiza un registro de calificación de jugador por su ID.
+ * @param {number} id - El ID de la calificación a actualizar.
+ * @param {object} serviceData - Los datos a actualizar.
+ * @returns {Promise<number>} - El número de filas afectadas.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const updateCalificacionJugador = async (id, serviceData) => {
+    const columns = [];
+    const values = [];
+
+    // Campos que NO deberían ser modificables (claves primarias, foráneas y fechas de creación)
+    const excludedFields = [
+        'id', 'partido_id', 'evaluador_id', 'jugador_evaluado_id', 'fecha_creacion'
+    ];
+    
+    // Iterar sobre los datos recibidos (serviceData)
+    for (const key in serviceData) {
+        
+        // 1. Asegurarse de que el valor no sea undefined (para evitar NULLs no intencionados)
+        // 2. Asegurarse de que el campo no esté excluido
+        if (serviceData[key] !== undefined && !excludedFields.includes(key)) {
+            let value = serviceData[key];
+
+            // Manejo especial para el campo 'habilidades' (JSON) y 'es_anonimo' (BOOLEAN)
+            if (key === 'habilidades' && Array.isArray(value)) {
+                 // Convertir el array a cadena JSON para la base de datos
+                 value = JSON.stringify(value);
+            } else if (key === 'es_anonimo' && typeof value === 'boolean') {
+                 // Convertir el booleano a 0 o 1
+                 value = value ? 1 : 0;
+            }
+
+            columns.push(`${key} = ?`);
+            values.push(value);
+        }
+    }
+
+    // Si no hay campos válidos para actualizar, retornar 0
+    if (columns.length === 0) {
+        return 0; 
+    }
+
+    // Añadir el ID de la calificación al final para la cláusula WHERE
+    values.push(id);
+
+    // Construir la consulta SQL
+    const sql = `UPDATE calificaciones_jugador SET ${columns.join(', ')} WHERE id = ?`;
+
+    try {
+        const [result] = await pool.query(sql, values); 
+        return result.affectedRows; 
+
+    } catch (error) {
+        // Manejar el error si la puntuación está fuera de rango
+        if (error.code === 'ER_CHECK_CONSTRAINT_VIOLATED') {
+             error.message = 'La puntuación debe estar entre 1.0 y 5.0.';
+        }
+        throw error;
+    }
+};
+
 export {
     createCalificacionJugador,
     getAllCalificacionesJugador,
-    getCalificacionJugadorById
+    getCalificacionJugadorById,
+    updateCalificacionJugador
 };
