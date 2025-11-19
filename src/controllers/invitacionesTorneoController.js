@@ -83,8 +83,44 @@ const updatInvitacionTorneo = async (req, res) => {
     }
 };
 
+const getIvitacionesByTorneo = async (req, res) => {
+    // 1. Obtener el ID del torneo de los parámetros de la URL
+    const torneoId = req.params.torneo_id; 
+
+    // 2. Validación básica
+    if (!torneoId || isNaN(torneoId)) {
+        return res.status(400).json({ message: 'ID de torneo no válido o faltante en la solicitud.' });
+    }
+
+    try {
+        // 3. Llamar al modelo
+        const inscripciones = await invitacionesTorneoModel.getInvitacionesByTorneoId(torneoId);
+
+        // 4. Verificar si se encontraron resultados
+        if (inscripciones.length === 0) {
+            return res.status(404).json({ message: `No se encontraron invitaciones para el torneo ID ${torneoId}.` });
+        }
+
+        // 5. Enviar la respuesta exitosa
+        res.status(200).json({
+            count: inscripciones.length,
+            torneo_id: torneoId,
+            data: inscripciones
+        });
+
+    } catch (error) {
+        console.error("❌ ERROR al obtener invitaciones por torneo ❌:", error);
+        res.status(500).json({
+            message: 'Error interno del servidor al consultar las invitaciones.',
+            error: error.message
+        });
+    }
+};
+
+
 
 export {
    CreateInvitacionTorneo,
-   updatInvitacionTorneo
+   updatInvitacionTorneo,
+   getIvitacionesByTorneo
 };
