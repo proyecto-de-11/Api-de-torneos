@@ -91,7 +91,47 @@ const getAllCalificacionesJugadorController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para obtener una calificación de jugador específica por su ID.
+ */
+const getCalificacionJugadorByIdController = async (req, res) => {
+    // Obtener el ID de la calificación desde los parámetros de la ruta
+    const calificacionId = req.params.id; 
+
+    // Validación básica
+    if (!calificacionId) {
+        return res.status(400).json({ message: 'El ID de la calificación es obligatorio.' });
+    }
+
+    try {
+        // Llamada al método del modelo
+        const calificacion = await calificacionModel.getCalificacionJugadorById(calificacionId);
+
+        if (!calificacion) {
+            // 404 Not Found si el ID no existe
+            return res.status(404).json({ message: `Calificación con ID ${calificacionId} no encontrada.` });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Calificación obtenida exitosamente', 
+            data: calificacion 
+        });
+        
+    } catch (error) {
+        
+        console.error(` ERROR FATAL AL OBTENER CALIFICACIÓN (ID: ${calificacionId}) :`, error);
+        
+        res.status(500).json({
+            message: 'Error al obtener la calificación',
+            error: error.message,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export {
     createCalificacionJugadorController,
-    getAllCalificacionesJugadorController
+    getAllCalificacionesJugadorController,
+    getCalificacionJugadorByIdController
 };
