@@ -68,7 +68,47 @@ const getAllInvitacionesPartidoController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para obtener una invitación a partido específica por su ID.
+ */
+const getInvitacionPartidoByIdController = async (req, res) => {
+    // Obtener el ID de la invitación desde los parámetros de la ruta
+    const invitacionId = req.params.id; 
+
+    // Validación básica
+    if (!invitacionId) {
+        return res.status(400).json({ message: 'El ID de la invitación es obligatorio.' });
+    }
+
+    try {
+        // Llamada al método del modelo
+        const invitacion = await invitacionModel.getInvitacionPartidoById(invitacionId);
+
+        if (!invitacion) {
+            // 404 Not Found si el ID no existe
+            return res.status(404).json({ message: `Invitación con ID ${invitacionId} no encontrada.` });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Invitación obtenida exitosamente', 
+            data: invitacion 
+        });
+        
+    } catch (error) {
+        
+        console.error(` ERROR FATAL AL OBTENER INVITACIÓN (ID: ${invitacionId}) :`, error);
+        
+        res.status(500).json({
+            message: 'Error al obtener la invitación',
+            error: error.message,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export {
     createInvitacionPartidoController,
-    getAllInvitacionesPartidoController
+    getAllInvitacionesPartidoController,
+    getInvitacionPartidoByIdController
 };

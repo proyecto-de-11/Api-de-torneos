@@ -77,7 +77,30 @@ const getAllInvitacionesPartido = async () => {
     }
 };
 
+/**
+ * Obtiene un registro de invitación a partido por su ID.
+ * @param {number} id - El ID de la invitación a buscar.
+ * @returns {Promise<object|null>} El objeto invitación si se encuentra, o null.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const getInvitacionPartidoById = async (id) => {
+    try {
+        // Consulta SQL para seleccionar todos los campos de la invitación por su ID
+        const sql = 'SELECT * FROM invitaciones_partido WHERE id = ?';
+        
+        const [rows] = await pool.query(sql, [id]);
+        
+        // Si se encuentra un resultado, devolver el primer elemento; si no, devolver null.
+        return rows.length > 0 ? rows[0] : null; 
+        
+    } catch (error) {
+        // Relanzar el error para que el controlador lo maneje
+        throw error;
+    }
+};
+
 export {
     createInvitacionPartido,
-    getAllInvitacionesPartido
+    getAllInvitacionesPartido,
+    getInvitacionPartidoById
 };
