@@ -1,29 +1,40 @@
 import pool from '../config/database.js';
 
 /**
- * Crea un nuevo registro de invitación a partido en la base de datos.
- * @param {object} serviceData - Datos de la invitación a crear.
+ * Crea un nuevo registro de invitación a partido en la base de datos,
+ * validando previamente la existencia del partido.
+ * * @param {object} serviceData - Datos de la invitación a crear.
  * @returns {Promise<number>} - El ID de la invitación recién creada.
- * @throws {Error} - Si ocurre un error durante la inserción.
+ * @throws {Error} - Si el partido_id no existe o si ocurre otro error de DB.
  */
 const createInvitacionPartido = async (serviceData) => {
-    // Desestructuración de los datos que coinciden con los campos de la tabla
     const { 
         partido_id, 
         equipo_invitado_id, 
         usuario_invito_id, 
         mensaje, 
-        // Omitimos 'estado' ya que tiene un valor por defecto ('pendiente')
     } = serviceData;
 
     try {
+        // 1. VALIDACIÓN DE EXISTENCIA DEL PARTIDO 
+        const [partidoRows] = await pool.query(
+            'SELECT id FROM partidos WHERE id = ?',
+            [partido_id]
+        );
+
+        if (partidoRows.length === 0) {
+            // Si el partido no existe, lanzamos un error explícito
+            const error = new Error(`El Partido con ID ${partido_id} no existe.`);
+            error.code = 'PARTIDO_NO_ENCONTRADO'; // Código personalizado para manejarlo en el controlador
+            throw error;
+        }
+        
+        // 2. CREACIÓN DE LA INVITACIÓN (Si la validación fue exitosa)
         const [result] = await pool.query( 
-            // Query SQL con los campos a insertar
             `INSERT INTO invitaciones_partido (
                 partido_id, equipo_invitado_id, usuario_invito_id, mensaje
             ) VALUES (?, ?, ?, ?)`,
             [
-                // Array de valores para los marcadores de posición
                 partido_id, 
                 equipo_invitado_id, 
                 usuario_invito_id, 
@@ -31,11 +42,10 @@ const createInvitacionPartido = async (serviceData) => {
             ]
         );
         
-        // Retorna el ID generado para la nueva invitación
         return result.insertId;
         
     } catch (error) {
-        // En el modelo, simplemente relanzamos el error
+        // En el modelo, simplemente relanzamos el error (puede ser el error de validación o uno de la DB)
         throw error;
     }
 };
