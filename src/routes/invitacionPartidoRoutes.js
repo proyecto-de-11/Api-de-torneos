@@ -7,6 +7,7 @@ const router = Router();
 router.post('/invitacionPartido', invitacionPartidoController.createInvitacionPartidoController);
 router.get('/invitacionPartido', invitacionPartidoController.getAllInvitacionesPartidoController);
 router.get('/invitacionPartido/:id', invitacionPartidoController.getInvitacionPartidoByIdController);
+router.put('/invitacionPartido/:id', invitacionPartidoController.updateInvitacionPartidoController);
 
 
 export default router;

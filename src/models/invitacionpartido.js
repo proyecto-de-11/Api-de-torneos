@@ -99,8 +99,52 @@ const getInvitacionPartidoById = async (id) => {
     }
 };
 
+/**
+ * Actualiza un registro de invitación a partido por su ID.
+ * @param {number} id - El ID de la invitación a actualizar.
+ * @param {object} serviceData - Los datos a actualizar.
+ * @returns {Promise<number>} - El número de filas afectadas.
+ * @throws {Error} - Si ocurre un error de base de datos.
+ */
+const updateInvitacionPartido = async (id, serviceData) => {
+    const columns = [];
+    const values = [];
+
+    // Campos que NO deberían ser modificables (claves o fechas automáticas)
+    const excludedFields = ['id', 'partido_id', 'equipo_invitado_id', 'usuario_invito_id', 'fecha_creacion'];
+    
+    // Iterar sobre los datos recibidos (serviceData)
+    for (const key in serviceData) {
+        // Asegurarse de que el valor no sea undefined y el campo no esté excluido
+        if (serviceData[key] !== undefined && !excludedFields.includes(key)) { 
+            columns.push(`${key} = ?`);
+            values.push(serviceData[key]);
+        }
+    }
+
+    // Si no hay campos válidos para actualizar, retornar 0
+    if (columns.length === 0) {
+        return 0; 
+    }
+
+    // Añadir el ID de la invitación al final para la cláusula WHERE
+    values.push(id);
+
+    // Construir la consulta SQL
+    const sql = `UPDATE invitaciones_partido SET ${columns.join(', ')} WHERE id = ?`;
+
+    try {
+        const [result] = await pool.query(sql, values); 
+        return result.affectedRows; 
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 export {
     createInvitacionPartido,
     getAllInvitacionesPartido,
-    getInvitacionPartidoById
+    getInvitacionPartidoById,
+    updateInvitacionPartido
 };

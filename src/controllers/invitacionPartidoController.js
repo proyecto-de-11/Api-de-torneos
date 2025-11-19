@@ -107,8 +107,53 @@ const getInvitacionPartidoByIdController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para actualizar una invitación a partido existente.
+ */
+const updateInvitacionPartidoController = async (req, res) => {
+    const invitacionId = req.params.id; 
+    const invitacionData = req.body; // El modelo se encarga de filtrar los campos
+
+    if (!invitacionId) {
+        return res.status(400).json({ message: 'El ID de la invitación es obligatorio para la edición.' });
+    }
+    
+    if (Object.keys(invitacionData).length === 0) {
+        return res.status(400).json({ message: 'El cuerpo de la solicitud no puede estar vacío.' });
+    }
+
+    try {
+        const affectedRows = await invitacionModel.updateInvitacionPartido(invitacionId, invitacionData);
+
+        if (affectedRows === 0) {
+            // Esto puede ser si el ID no existe o si no se pasó ningún campo válido para actualizar.
+            return res.status(404).json({ message: `Invitación con ID ${invitacionId} no encontrada o no se proporcionaron campos válidos.` });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Invitación actualizada exitosamente', 
+            invitacionId: invitacionId,
+            filas_afectadas: affectedRows 
+        });
+        
+    } catch (error) {
+        
+        console.error(" ERROR FATAL AL ACTUALIZAR INVITACIÓN :", error);
+        
+        const errorMessage = error.sqlMessage || error.message; 
+        
+        res.status(500).json({
+            message: 'Error al actualizar la invitación',
+            error: errorMessage,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export {
     createInvitacionPartidoController,
     getAllInvitacionesPartidoController,
-    getInvitacionPartidoByIdController
+    getInvitacionPartidoByIdController,
+    updateInvitacionPartidoController
 };
