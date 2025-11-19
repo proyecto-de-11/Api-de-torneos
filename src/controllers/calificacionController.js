@@ -130,8 +130,67 @@ const getCalificacionJugadorByIdController = async (req, res) => {
     }
 };
 
+/**
+ * Controlador para actualizar una calificación de jugador existente.
+ */
+const updateCalificacionJugadorController = async (req, res) => {
+    const calificacionId = req.params.id; 
+    const calificacionData = req.body; // El modelo se encarga de filtrar los campos
+
+    if (!calificacionId) {
+        return res.status(400).json({ message: 'El ID de la calificación es obligatorio para la edición.' });
+    }
+    
+    if (Object.keys(calificacionData).length === 0) {
+        return res.status(400).json({ message: 'El cuerpo de la solicitud no puede estar vacío.' });
+    }
+
+    // Opcional: Validación extra para puntuación si está presente en el body
+    if (calificacionData.puntuacion !== undefined) {
+         const score = parseFloat(calificacionData.puntuacion);
+         if (isNaN(score) || score < 1 || score > 5) {
+             return res.status(400).json({ 
+                message: 'La puntuación debe ser un número entre 1.0 y 5.0.' 
+            });
+         }
+    }
+
+    try {
+        const affectedRows = await calificacionModel.updateCalificacionJugador(calificacionId, calificacionData);
+
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: `Calificación con ID ${calificacionId} no encontrada o no se proporcionaron campos válidos.` });
+        }
+
+        // 200 OK
+        res.status(200).json({ 
+            message: 'Calificación actualizada exitosamente', 
+            calificacionId: calificacionId,
+            filas_afectadas: affectedRows 
+        });
+        
+    } catch (error) {
+        
+        console.error(" ERROR FATAL AL ACTUALIZAR CALIFICACIÓN :", error);
+        
+        // Manejar el error de puntuación fuera de rango capturado en el modelo
+        if (error.message.includes('puntuación debe estar entre')) {
+             return res.status(400).json({ message: error.message });
+        }
+        
+        const errorMessage = error.sqlMessage || error.message; 
+        
+        res.status(500).json({
+            message: 'Error al actualizar la calificación',
+            error: errorMessage,
+            detail: "Verifique el error en la terminal de Node.js."
+        });
+    }
+};
+
 export {
     createCalificacionJugadorController,
     getAllCalificacionesJugadorController,
-    getCalificacionJugadorByIdController
+    getCalificacionJugadorByIdController,
+    updateCalificacionJugadorController
 };
