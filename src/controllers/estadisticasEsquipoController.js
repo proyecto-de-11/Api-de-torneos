@@ -41,7 +41,7 @@ const CrearEstadisticaEquipo = async (req, res) => {
             torneos_ganados
 
         };
-        const newEstadisticaEquipoId = await estadisticasEquipoModel.CrearEstadisricaEquipo(inscripcionData);
+        const newEstadisticaEquipoId = await estadisticasEquipoModel.CrearEstadisticaEquipo(inscripcionData);
 
         res.status(201).json({
             message: 'Estadistica de equipo creada exitosamente',
@@ -127,10 +127,35 @@ const deleteEstadisticaEquipo = async (req, res) => {
     }
 };
 
+const getAllEstadisticasEquipos = async (req, res) => {
+    try {
+        
+        const estadisticas = await estadisticasEquipoModel.getAllEstadisticasEquipos();
+
+        // 2. Verificar si hay resultados
+        if (estadisticas.length === 0) {
+            // Si no hay torneos, devolvemos 200 OK con un array vacío
+            return res.status(200).json([]);
+        }
+
+        // 3. Éxito
+        res.status(200).json(estadisticas);
+
+    } catch (error) {
+        console.error("❌ ERROR al obtener la lista de estadisticas de los equipos ❌:", error);
+        res.status(500).json({
+            message: 'Error interno del servidor al obtener estadisticas',
+            error: error.message,
+        });
+    }
+};
+
+
 
 
 export{
     CrearEstadisticaEquipo,
     updatEstadisticaEquipo,
-    deleteEstadisticaEquipo
+    deleteEstadisticaEquipo,
+    getAllEstadisticasEquipos
 };

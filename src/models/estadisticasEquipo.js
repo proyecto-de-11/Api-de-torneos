@@ -96,8 +96,27 @@ const deleteEstadisticaEquipo = async (id) => {
     }
 };
 
+/**
+ * Obtiene todos los torneos de la base de datos.
+ * @returns {Array} Un array con todos los objetos de torneo.
+ */
+const getAllEstadisticasEquipos = async () => {
+    try {
+        // Seleccionamos todos los campos para listar la información completa
+        const [rows] = await pool.query(
+            'SELECT id, equipo_id, partidos_jugados_total, partidos_ganados_total, partidos_perdidos_total, partidos_empatados_total, goles_favor_total, goles_contra_total, partidos_jugados_torneos, partidos_ganados_torneos, partidos_perdidos_torneos, partidos_empatados_torneos, goles_favor_torneos, goles_contra_torneos, torneos_ganados FROM estadisticas_equipo ORDER BY id DESC'
+        );
+        // Devolvemos el array de resultados
+        return rows; 
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 export{
   CrearEstadisticaEquipo,
   updateEstadisticaEquipo,
-  deleteEstadisticaEquipo
+  deleteEstadisticaEquipo,
+  getAllEstadisticasEquipos
 };

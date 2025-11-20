@@ -5,7 +5,7 @@ const createTipoDeport = async (serviceData) => {
     const { nombre, descripcion, icono, esta_activo } = serviceData;
 
     try {
-        // ✅ CORRECCIÓN: Se eliminó .promise()
+      
         const [result] = await pool.query( 
             'INSERT INTO tipos_deporte (nombre, descripcion, icono, esta_activo) VALUES (?, ?, ?, ?)',
             [nombre, descripcion, icono, esta_activo]
@@ -24,7 +24,7 @@ const createTipoDeport = async (serviceData) => {
  */
 const deleteTipoDeport = async (id) => {
     try {
-        // ✅ CORRECCIÓN: Se eliminó .promise()
+     
         const [result] = await pool.query(
             'DELETE FROM tipos_deporte WHERE id = ?',
             [id]
@@ -45,7 +45,7 @@ const deleteTipoDeport = async (id) => {
  */
 const getTipoDeportByName = async (nombre) => {
     try {
-        // ✅ CORRECCIÓN: Se eliminó .promise()
+      
         const [rows] = await pool.query(
             'SELECT id, nombre, descripcion, icono, esta_activo FROM tipos_deporte WHERE nombre LIKE CONCAT("%", ?, "%")',
             [nombre]

@@ -43,7 +43,7 @@ const updateTorneo = async (id, serviceData) => {
     const sql = `UPDATE torneos SET ${columns.join(', ')} WHERE id = ?`;
 
     try {
-        const [result] = await pool.promise().query(sql, values);
+        const [result] = await pool.query(sql, values);
         return result.affectedRows; 
 
     } catch (error) {
@@ -58,7 +58,7 @@ const updateTorneo = async (id, serviceData) => {
  */
 const deleteTorneo = async (id) => {
     try {
-        const [result] = await pool.promise().query(
+        const [result] = await pool.query(
             'DELETE FROM torneos WHERE id = ?',
             [id]
         );
@@ -78,7 +78,7 @@ const deleteTorneo = async (id) => {
 const getAllTorneos = async () => {
     try {
         // Seleccionamos todos los campos para listar la información completa
-        const [rows] = await pool.promise().query(
+        const [rows] = await pool.query(
             'SELECT id, nombre, tipo_deporte_id, categoria, nivel, estado, fecha_inicio, costo_inscripcion, fecha_creacion, fecha_actualizacion FROM torneos ORDER BY fecha_creacion DESC'
         );
         // Devolvemos el array de resultados
