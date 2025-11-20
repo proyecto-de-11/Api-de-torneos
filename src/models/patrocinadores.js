@@ -68,8 +68,29 @@ const updatePatrocinadorTorneo = async (id, serviceData) => {
     }
 };
 
+/**
+ * Elimina un tipo de deporte por su ID.
+ * @param {number} id - El ID del deporte a eliminar.
+ * @returns {number} El número de filas afectadas (debería ser 1 si se eliminó).
+ */
+const deletePatrocinadorATorneo = async (id) => {
+    try {
+        const [result] = await pool.query(
+            'DELETE FROM patrocinadores WHERE id = ?',
+            [id]
+        );
+    
+        return result.affectedRows; 
+
+    } catch (error) {
+        
+        throw error;
+    }
+};
+
 
 export {
    inscribirPatrocinadorATorneo,
-   updatePatrocinadorTorneo
+   updatePatrocinadorTorneo,
+   deletePatrocinadorATorneo
 };
