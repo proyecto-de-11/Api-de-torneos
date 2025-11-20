@@ -1,7 +1,7 @@
 import * as estadisticasEquipoModel from '../models/estadisticasEquipo.js';
 
 
-const CrearEstadisricaEquipo = async (req, res) => {
+const CrearEstadisticaEquipo = async (req, res) => {
     const {
         equipo_id,
         partidos_jugados_total,
@@ -57,6 +57,41 @@ const CrearEstadisricaEquipo = async (req, res) => {
     }
 };
 
+const updatEstadisticaEquipo = async (req, res) => {
+    const inscripcionId = req.params.id; 
+    const updateData = req.body;
+
+    if (!inscripcionId || isNaN(inscripcionId)) {
+        return res.status(400).json({ message: 'ID de estadistica de equipo no válido o faltante' });
+    }
+
+    if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ message: 'Datos de actualización no proporcionados' });
+    }
+
+    try {
+        const affectedRows = await estadisticasEquipoModel.updateEstadisticaEquipo(inscripcionId, updateData);
+
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: `No se encontró el registro de estadistica con ID ${inscripcionId} o no se proporcionaron cambios.` });
+        }
+
+        res.status(200).json({ 
+            message: `Registro de estadistica con ID ${inscripcionId} actualizado exitosamente`,
+            inscripcionId: inscripcionId 
+        });
+
+    } catch (error) {
+        console.error("❌ ERROR al actualizar estadistica ❌:", error);
+        res.status(500).json({
+            message: 'Error al intentar actualizar la estadistica',
+            error: error.message,
+        });
+    }
+};
+
+
 export{
-    CrearEstadisricaEquipo
+    CrearEstadisticaEquipo,
+    updatEstadisticaEquipo
 };

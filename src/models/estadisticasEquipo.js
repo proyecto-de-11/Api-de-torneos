@@ -6,7 +6,7 @@ import pool from '../config/database.js';
  * @param {object} serviceData - Datos de la inscripción.
  * @returns {number} El ID del nuevo registro de inscripción.
  */
-const CrearEstadisricaEquipo = async (serviceData) => {
+const CrearEstadisticaEquipo = async (serviceData) => {
     const { 
         equipo_id, 
         partidos_jugados_total, 
@@ -36,6 +36,47 @@ const CrearEstadisricaEquipo = async (serviceData) => {
     }
 };
 
+/**
+ * Actualiza un registro de equipos_torneo por su ID de inscripción.
+ * @param {number} id - El ID del registro de inscripción (columna 'id').
+ * @param {object} serviceData - Los datos a actualizar.
+ * @returns {number} El número de filas afectadas.
+ */
+const updateEstadisticaEquipo = async (id, serviceData) => {
+    const columns = [];
+    const values = [];
+
+    // Lista de campos que NO deben ser actualizados por el usuario
+    const excludedFields = [ 'equipo_id'];
+    
+    // Iterar sobre los datos recibidos (serviceData)
+    for (const key in serviceData) {
+        // Usar los nombres de columna exactos de tu tabla
+        if (serviceData[key] !== undefined && !excludedFields.includes(key)) { 
+            columns.push(`${key} = ?`);
+            values.push(serviceData[key]);
+        }
+    }
+
+    if (columns.length === 0) {
+        return 0; 
+    }
+
+    values.push(id);
+
+    // Construir la consulta SQL
+    const sql = `UPDATE estadisticas_equipo SET ${columns.join(', ')} WHERE id = ?`;
+
+    try {
+        const [result] = await pool.query(sql, values);
+        return result.affectedRows; 
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 export{
-  CrearEstadisricaEquipo
+  CrearEstadisticaEquipo,
+  updateEstadisticaEquipo
 };

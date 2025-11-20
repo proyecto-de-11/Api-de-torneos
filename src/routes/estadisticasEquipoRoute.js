@@ -4,6 +4,7 @@ import * as estadisticaEquipoController from '../controllers/estadisticasEsquipo
 
 const router = Router();
 
-router.post('/estadisticaEquipo', estadisticaEquipoController.CrearEstadisricaEquipo)
+router.post('/estadisticaEquipo', estadisticaEquipoController.CrearEstadisticaEquipo)
+router.put('/estadisticaEquipo/:id', estadisticaEquipoController.updatEstadisticaEquipo)
 
 export default router;
