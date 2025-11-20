@@ -6,5 +6,6 @@ const router = Router();
 
 router.post('/estadisticaEquipo', estadisticaEquipoController.CrearEstadisticaEquipo)
 router.put('/estadisticaEquipo/:id', estadisticaEquipoController.updatEstadisticaEquipo)
+router.delete('/estadisticaEquipo/:id', estadisticaEquipoController.deleteEstadisticaEquipo)
 
 export default router;
