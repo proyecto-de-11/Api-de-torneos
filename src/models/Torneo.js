@@ -116,7 +116,7 @@ const getTorneoCreadoById = async (id) => {
         );
         
         // Si rows tiene un elemento, lo devolvemos; si está vacío, devolvemos null
-        return rows.length > 0 ? rows[0] : null; 
+        return rows.length > 0 ? rows : null; 
     } catch (error) {
         throw error;
     }
