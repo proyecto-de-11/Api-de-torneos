@@ -111,7 +111,7 @@ const getTorneoCreadoById = async (id) => {
     try {
         const [rows] = await pool.query(
             // Seleccionamos todos los campos del torneo
-            'SELECT * FROM torneos WHERE creador_id = ?',
+            'SELECT * FROM torneos WHERE creado_por = ?',
             [id]
         );
         
