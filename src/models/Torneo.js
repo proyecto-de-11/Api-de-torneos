@@ -107,11 +107,26 @@ const getTorneoById = async (id) => {
         throw error;
     }
 };
+const getTorneoCreadoById = async (id) => {
+    try {
+        const [rows] = await pool.query(
+            // Seleccionamos todos los campos del torneo
+            'SELECT * FROM torneos WHERE creador_id = ?',
+            [id]
+        );
+        
+        // Si rows tiene un elemento, lo devolvemos; si está vacío, devolvemos null
+        return rows.length > 0 ? rows[0] : null; 
+    } catch (error) {
+        throw error;
+    }
+};
 
 export {
     createTorneo,
     updateTorneo,
     deleteTorneo,
     getAllTorneos,
-    getTorneoById
+    getTorneoById,
+    getTorneoCreadoById
 };
